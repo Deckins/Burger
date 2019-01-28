@@ -16,3 +16,15 @@
 .Toolbar nav {
     height: 100%;
 }
+
+.Logo{
+    height:80%;
+}
+/*If the max width is 499 AKA Mobile device*/
+@media(max-width: 499px){
+    .DesktopOnly{
+        /*Gets rid of the navigation item toolbar on the top right because
+        we only want the side drawer for mobile to show up*/
+        display:none;
+    }
+}
