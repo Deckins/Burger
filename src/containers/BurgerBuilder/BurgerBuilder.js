@@ -72,41 +72,58 @@ class BurgerBuilder extends Component {
     }
 
     purchasingContinueHandler = () => {
-        this.setState({ loading: true })
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Bob Dylan',
-                address: {
-                    street: 'street 1',
-                    zipCode: '11330',
-                    country: 'Germany'
-                },
-                email: 'hi@gmail.com',
+        //while we are doing a post request we set loading to true
+        //so that we can show a spinner for the orderSummary
+        // this.setState({ loading: true })
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.totalPrice,
+        //     customer: {
+        //         name: 'Bob Dylan',
+        //         address: {
+        //             street: 'street 1',
+        //             zipCode: '11330',
+        //             country: 'Germany'
+        //         },
+        //         email: 'hi@gmail.com',
 
-            },
-            deliveryMethod: 'fastest'
+        //     },
+        //     deliveryMethod: 'fastest'
+        // }
+        // //Once the request reaches response it is done loading so we do not 
+        // //need it to load anymore && if there is an error stop loading
+        // axios.post('/orders.jsn', order)
+        //     .then(response => {
+        //         console.log(response.data)
+        //         this.setState({ loading: false, purchasing: false })
+        //     })
+        //     .catch(error => this.setState({ loading: false, purchasing: false }))
+        const queryParams=[];
+        for(let i in this.state.ingredients){
+            //encodeURI so that the values can be used in the URL because of white space
+            queryParams.push(encodeURIComponent(i)+ '=' + encodeURIComponent(this.state.ingredients[i]))
         }
-        //Once the request reaches response it is done loading so we do not 
-        //need it to load anymore && if there is an error stop loading
-        axios.post('/orders.json', order)
-            .then(response => {
-                console.log(response.data)
-                this.setState({ loading: false, purchasing: false })
-            })
-            .catch(error => this.setState({ loading: false, purchasing: false }))
+        // console.log(queryParams)
+        queryParams.push('price=' +this.state.totalPrice);
+        const queryString=queryParams.join('&')
+        this.props.history.push({
+            pathname:'/checkout',
+            search: '?'+ queryString
+        })
+
 
     }
     modalHandler = () => {
         this.setState({ purchasing: false })
     }
     componentDidMount() {
-        axios.get('https://my-react-burger-d2699.firebaseio.com/ingredient.json')
+        console.log(this.props)
+        axios.get('https://my-react-burger-d2699.firebaseio.com/ingredients.json')
             .then(response => {
                 this.setState({ ingredients: response.data })
-                console.log(response.data)
+                // console.log(response.data)
             })
+            //catching error and outputting a custom message
             .catch(error =>{
                 this.setState({error:true})
             })
